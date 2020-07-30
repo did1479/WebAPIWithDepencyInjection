@@ -1,4 +1,6 @@
-﻿namespace WebAPIWithDependencyInjection.Models
+﻿using System;
+
+namespace WebAPIWithDependencyInjection.Models
 {
     public class CarDeatils
     {

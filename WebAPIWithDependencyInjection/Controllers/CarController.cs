@@ -1,6 +1,6 @@
-﻿using System;
-using System.Web.Http;
+﻿using System.Web.Http;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 using WebAPIWithDependencyInjection.BusinessAccess.interfaces;
 using HttpGetAttribute = System.Web.Http.HttpGetAttribute;
 using RouteAttribute = System.Web.Http.RouteAttribute;
@@ -18,19 +18,17 @@ namespace WebAPIWithDependencyInjection.Controllers
             _bal = _balObj;
         }
 
-        /// <summary>
-        ///     Simple "Hello World" method to ensure service is up.
-        /// </summary>
-        /// <returns>The literal "Hello World".</returns>
         [HttpGet]
-        [Route("~/api/HelloWorld")]
-        public string HelloWorld() => $"Hello World - Eci Trace Manager Service on '{Environment.MachineName}'  (.Net Version = {Environment.Version}) responding.";
-
-        // GET api/Car
-        [HttpGet]
+        [Route("~/api/GetCarByCarId")]
         public JsonResult GetCarByCarId(int carId)
         {
-            return new JsonResult { Data = _bal.GetCarDetails(carId) };
+            var settings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                StringEscapeHandling = StringEscapeHandling.EscapeHtml
+            };
+            var result = _bal.GetCarDetails(carId);
+            return new JsonResult { Data = JsonConvert.SerializeObject(result, settings), JsonRequestBehavior = JsonRequestBehavior.AllowGet }; ;
         }
     }
 }
